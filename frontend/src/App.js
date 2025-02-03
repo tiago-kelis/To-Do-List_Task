@@ -8,28 +8,28 @@ const App = () => {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:3001/tasks')
+    axios.get('http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks')
       .then(response => {
         setTasks(response.data);
       });
   }, []);
 
   const addTask = (task) => {
-    axios.post('http://localhost:3001/tasks', { ...task, status: 'To Do' })
+    axios.post('http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks', { ...task, status: 'To Do' })
       .then(response => {
         setTasks([...tasks, response.data]);
       });
   };
 
   const updateTask = (id, updates) => {
-    axios.put(`http://localhost:3001/tasks/${id}`, updates)
+    axios.put(`http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks/${id}`, updates)
       .then(response => {
         setTasks(tasks.map(task => task.id === id ? response.data : task));
       });
   };
 
   const deleteTask = (id) => {
-    axios.delete(`http://localhost:3001/tasks/${id}`)
+    axios.delete(`http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks/${id}`)
       .then(() => {
         setTasks(tasks.filter(task => task.id !== id));
       });
@@ -54,7 +54,7 @@ const App = () => {
   };
 
   return (
-      <div className="App">
+    <div className="App">
       <h1 style={{ margin: '0', padding: '0' }}>
         <img 
           src={process.env.PUBLIC_URL + '/logoWeb-removebg-preview.png'} 
@@ -78,7 +78,6 @@ const App = () => {
         </div>
       </div>
     </div>
-    
   );
 };
 
