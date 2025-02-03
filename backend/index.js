@@ -7,9 +7,19 @@ const UserController = require('./controller/UserController');
 require('dotenv').config(); // Carrega as variáveis de ambiente do .env
 
 const app = express();
+
+// Configurando o CORS para permitir múltiplas origens
+const allowedOrigins = ['https://to-do-list-task-phi.vercel.app', 'http://localhost:3000'];
 app.use(cors({
-  origin: 'https://to-do-list-task-phi.vercel.app'
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
+
 app.use(express.json());
 
 // Testar a conexão com o banco de dados
