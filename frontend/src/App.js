@@ -10,28 +10,44 @@ const App = () => {
   useEffect(() => {
     axios.get('http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks')
       .then(response => {
+        console.log("Fetched tasks:", response.data); // Log para verificação
         setTasks(response.data);
+      })
+      .catch(error => {
+        console.error("Error fetching tasks: ", error);
       });
   }, []);
 
   const addTask = (task) => {
     axios.post('http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks', { ...task, status: 'To Do' })
       .then(response => {
+        console.log("Added task:", response.data); // Log para verificação
         setTasks([...tasks, response.data]);
+      })
+      .catch(error => {
+        console.error("Error adding task: ", error);
       });
   };
 
   const updateTask = (id, updates) => {
     axios.put(`http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks/${id}`, updates)
       .then(response => {
+        console.log("Updated task:", response.data); // Log para verificação
         setTasks(tasks.map(task => task.id === id ? response.data : task));
+      })
+      .catch(error => {
+        console.error("Error updating task: ", error);
       });
   };
 
   const deleteTask = (id) => {
     axios.delete(`http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks/${id}`)
       .then(() => {
+        console.log("Deleted task:", id); // Log para verificação
         setTasks(tasks.filter(task => task.id !== id));
+      })
+      .catch(error => {
+        console.error("Error deleting task: ", error);
       });
   };
 

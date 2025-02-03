@@ -29,8 +29,8 @@ app.delete('/tasks/:id', TaskController.deleteTask);
 app.get('/users', UserController.getAllUsers);
 app.post('/users', UserController.addUser);
 
-// Configurando a porta do servidor
+// Configurando a porta do servidor e permitindo conexões de qualquer interface
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+app.listen(PORT, '::', () => {
   console.log(`Server running on port ${PORT}`);
 });
