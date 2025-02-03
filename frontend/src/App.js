@@ -54,8 +54,14 @@ const App = () => {
   };
 
   return (
-    <div className="App">
-      <h1>Task Manager</h1>
+      <div className="App">
+      <h1 style={{ margin: '0', padding: '0' }}>
+        <img 
+          src={process.env.PUBLIC_URL + '/logoWeb-removebg-preview.png'} 
+          alt="Logo" 
+          style={{ width: '150px', height: '90px', padding: '0', margin: '0' }} 
+        />
+      </h1>
       <TaskForm onAddTask={addTask} />
       <div className="TaskListColumns">
         <div className="TaskListColumn">
@@ -72,6 +78,7 @@ const App = () => {
         </div>
       </div>
     </div>
+    
   );
 };
 
