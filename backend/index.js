@@ -7,7 +7,9 @@ const UserController = require('./controller/UserController');
 require('dotenv').config(); // Carrega as variáveis de ambiente do .env
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'https://to-do-list-task-phi.vercel.app'
+}));
 app.use(express.json());
 
 // Testar a conexão com o banco de dados

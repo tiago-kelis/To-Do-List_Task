@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
-import './App.css'; // Importar o arquivo de estilos
+import './App.css';
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -10,7 +10,7 @@ const App = () => {
   useEffect(() => {
     axios.get('http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks')
       .then(response => {
-        console.log("Fetched tasks:", response.data); // Log para verificação
+        console.log("Fetched tasks:", response.data);
         setTasks(response.data);
       })
       .catch(error => {
@@ -21,7 +21,7 @@ const App = () => {
   const addTask = (task) => {
     axios.post('http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks', { ...task, status: 'To Do' })
       .then(response => {
-        console.log("Added task:", response.data); // Log para verificação
+        console.log("Added task:", response.data);
         setTasks([...tasks, response.data]);
       })
       .catch(error => {
@@ -32,7 +32,7 @@ const App = () => {
   const updateTask = (id, updates) => {
     axios.put(`http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks/${id}`, updates)
       .then(response => {
-        console.log("Updated task:", response.data); // Log para verificação
+        console.log("Updated task:", response.data);
         setTasks(tasks.map(task => task.id === id ? response.data : task));
       })
       .catch(error => {
@@ -43,7 +43,7 @@ const App = () => {
   const deleteTask = (id) => {
     axios.delete(`http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks/${id}`)
       .then(() => {
-        console.log("Deleted task:", id); // Log para verificação
+        console.log("Deleted task:", id);
         setTasks(tasks.filter(task => task.id !== id));
       })
       .catch(error => {
