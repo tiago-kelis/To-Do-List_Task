@@ -3,11 +3,12 @@ import axios from 'axios';
 import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import './App.css';
+import https from 'https-browserify'; // Substituído require('https') por importação de https-browserify
 
 // Configuração para ignorar erros de certificado apenas durante o desenvolvimento
 const axiosInstance = axios.create({
   baseURL: 'https://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001',
-  httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false })
+  httpsAgent: new https.Agent({ rejectUnauthorized: false }) // Usando https importado do https-browserify
 });
 
 const App = () => {
