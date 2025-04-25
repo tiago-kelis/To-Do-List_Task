@@ -24,6 +24,7 @@
     "https-browserify": "^1.0.0",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
+    "prisma": "^6.6.0",
     "process": "^0.11.10",
     "react-app-rewired": "^2.2.1",
     "stream-browserify": "^3.0.0",
@@ -36,6 +37,7 @@
     "webpack-dev-server": "^5.2.1"
   },
   "dependencies": {
+    "@prisma/client": "^6.6.0",
     "axios": "^0.21.4"
   }
 }
