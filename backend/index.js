@@ -5,8 +5,8 @@ const app = express();
 
 // Importando controllers
 // Suposição de caminhos corretos com base nos arquivos compartilhados
-const taskController = require('./controllers/taskController');
-const userController = require('./controllers/userController');
+const taskController = require('./controller/TaskController');
+const userController = require('./controller/UserController');
 
 // Middleware
 app.use(cors()); // Habilita CORS para todas as rotas
