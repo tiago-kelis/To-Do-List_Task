@@ -7,12 +7,12 @@ module.exports = {
     extensions: ['.js', '.jsx'], // Inclua outras extensões, se necessário
 
     fallback: {
-      "https": require.resolve("https-browserify"),
+     
       "http": require.resolve("stream-http"),
       "stream": require.resolve("stream-browserify"),
       "url": require.resolve("url/"),
       "buffer": require.resolve("buffer/"),     
-      "https": require.resolve('https-browserify'),
+      https: require.resolve('https-browserify'),
  
     },
   },
