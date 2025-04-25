@@ -3,6 +3,8 @@ const path = require('path');
 module.exports = {
   mode: "development",
   resolve: {
+    extensions: ['.js', '.jsx'], // Inclua outras extensões, se necessário
+
     fallback: {
       "https": require.resolve("https-browserify"),
       "http": require.resolve("stream-http"),
@@ -19,6 +21,14 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.(js|jsx)$/, // Aceita arquivos JS e JSX
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
