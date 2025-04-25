@@ -4,8 +4,9 @@ const cors = require('cors'); // Você precisará instalar: npm install cors
 const app = express();
 
 // Importando controllers
-const taskController = require('./caminho/para/taskController');
-const userController = require('./caminho/para/userController');
+// Suposição de caminhos corretos com base nos arquivos compartilhados
+const taskController = require('./controllers/taskController');
+const userController = require('./controllers/userController');
 
 // Middleware
 app.use(cors()); // Habilita CORS para todas as rotas
