@@ -1,0 +1,25 @@
+module.exports = {
+    nextTick: function(fn) {
+      setTimeout(fn, 0);
+    },
+    browser: true,
+    env: {},
+    version: '',
+    versions: {},
+    on: function() {},
+    addListener: function() {},
+    once: function() {},
+    off: function() {},
+    removeListener: function() {},
+    removeAllListeners: function() {},
+    emit: function() {},
+    binding: function() {},
+    cwd: function() { return '/' },
+    chdir: function() {},
+    umask: function() { return 0 },
+    hrtime: function() { return [0, 0] },
+    platform: 'browser',
+    release: {},
+    config: {},
+    title: 'browser',
+  };

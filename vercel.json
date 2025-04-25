@@ -6,7 +6,7 @@
       "use": "@vercel/static-build",
       "config": { 
         "distDir": "build",
-        "buildCommand": "cd frontend && DISABLE_ESLINT_PLUGIN=true npm run build"
+        "buildCommand": "cd frontend && npm install process https-browserify stream-http stream-browserify url buffer path-browserify util assert constants-browserify os-browserify webpack && DISABLE_ESLINT_PLUGIN=true npm run build"
       }
     },
     {
