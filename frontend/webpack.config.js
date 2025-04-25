@@ -1,3 +1,4 @@
+/* eslint-disable no-dupe-keys */
 const path = require('path');
 
 module.exports = {
@@ -10,7 +11,9 @@ module.exports = {
       "http": require.resolve("stream-http"),
       "stream": require.resolve("stream-browserify"),
       "url": require.resolve("url/"),
-      "buffer": require.resolve("buffer/"),      
+      "buffer": require.resolve("buffer/"),     
+      "https": require.resolve('https-browserify'),
+ 
     },
   },
 
