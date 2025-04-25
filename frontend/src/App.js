@@ -4,11 +4,17 @@ import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import './App.css';
 
+// Configuração para ignorar erros de certificado apenas durante o desenvolvimento
+const axiosInstance = axios.create({
+  baseURL: 'https://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001',
+  httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false })
+});
+
 const App = () => {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    axios.get('http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks')
+    axiosInstance.get('/tasks')
       .then(response => {
         console.log("Fetched tasks:", response.data);
         setTasks(response.data);
@@ -19,7 +25,7 @@ const App = () => {
   }, []);
 
   const addTask = (task) => {
-    axios.post('http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks', { ...task, status: 'To Do' })
+    axiosInstance.post('/tasks', { ...task, status: 'To Do' })
       .then(response => {
         console.log("Added task:", response.data);
         setTasks([...tasks, response.data]);
@@ -30,7 +36,7 @@ const App = () => {
   };
 
   const updateTask = (id, updates) => {
-    axios.put(`http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks/${id}`, updates)
+    axiosInstance.put(`/tasks/${id}`, updates)
       .then(response => {
         console.log("Updated task:", response.data);
         setTasks(tasks.map(task => task.id === id ? response.data : task));
@@ -41,7 +47,7 @@ const App = () => {
   };
 
   const deleteTask = (id) => {
-    axios.delete(`http://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001/tasks/${id}`)
+    axiosInstance.delete(`/tasks/${id}`)
       .then(() => {
         console.log("Deleted task:", id);
         setTasks(tasks.filter(task => task.id !== id));
