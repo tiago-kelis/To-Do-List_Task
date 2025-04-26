@@ -11,5 +11,14 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>  
+    <script>
+      // Force cache refresh
+      if (!window.location.href.includes('forceCacheRefresh')) {
+        const timestamp = Date.now();
+        window.location.href = window.location.href + 
+          (window.location.href.includes('?') ? '&' : '?') + 
+          'forceCacheRefresh=' + timestamp;
+      }
+    </script>
   </body>
 </html>
