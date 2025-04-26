@@ -4,15 +4,21 @@ import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import './App.css';
 
-// Configuração básica do axios sem agente HTTPS personalizado
+// Configuração atualizada do axios
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://[2804:14d:78d0:4256:f94b:6243:c8ef:6f04]:3001'
+  // Substitua pelo URL do seu backend no Render
+  baseURL: process.env.REACT_APP_API_URL || 'https://to-do-list-task.onrender.com'
+  // Alternativa usando URL relativa se frontend e backend estiverem no mesmo domínio:
+  // baseURL: '/api'
 });
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Adicionando tratamento de erro mais detalhado
+    setError(null);
     axiosInstance.get('/tasks')
       .then(response => {
         console.log("Fetched tasks:", response.data);
@@ -20,10 +26,16 @@ const App = () => {
       })
       .catch(error => {
         console.error("Error fetching tasks: ", error);
+        setError("Não foi possível carregar as tarefas. Por favor, tente novamente mais tarde.");
+        // Opcional: use um fallback de dados para desenvolvimento
+        if (process.env.NODE_ENV !== 'production') {
+          setTasks([]);
+        }
       });
   }, []);
 
   const addTask = (task) => {
+    setError(null);
     axiosInstance.post('/tasks', { ...task, status: 'To Do' })
       .then(response => {
         console.log("Added task:", response.data);
@@ -31,9 +43,11 @@ const App = () => {
       })
       .catch(error => {
         console.error("Error adding task: ", error);
+        setError("Não foi possível adicionar a tarefa. Por favor, tente novamente.");
       });
   };
 
+  // O resto do seu código permanece igual...
   const updateTask = (id, updates) => {
     axiosInstance.put(`/tasks/${id}`, updates)
       .then(response => {
@@ -42,6 +56,7 @@ const App = () => {
       })
       .catch(error => {
         console.error("Error updating task: ", error);
+        setError("Não foi possível atualizar a tarefa.");
       });
   };
 
@@ -53,6 +68,7 @@ const App = () => {
       })
       .catch(error => {
         console.error("Error deleting task: ", error);
+        setError("Não foi possível excluir a tarefa.");
       });
   };
 
@@ -83,6 +99,10 @@ const App = () => {
           style={{ width: '150px', height: '90px', padding: '0', margin: '0' }} 
         />
       </h1>
+      
+      {/* Exibe mensagens de erro quando ocorrerem */}
+      {error && <div className="error-message">{error}</div>}
+      
       <TaskForm onAddTask={addTask} />
       <div className="TaskListColumns">
         <div className="TaskListColumn">

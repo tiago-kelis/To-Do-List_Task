@@ -9,7 +9,11 @@ const taskController = require('./controller/TaskController');
 const userController = require('./controller/UserController');
 
 // Middleware
-app.use(cors()); // Habilita CORS para todas as rotas
+app.use(cors({
+  origin: ['http://to-do-list-task-omega.vercel.app/', 'http://localhost:3000'],
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Rota padrão para testar o servidor
