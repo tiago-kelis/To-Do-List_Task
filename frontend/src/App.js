@@ -4,14 +4,33 @@ import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import './App.css';
 
+const cors = require('cors');
+const express = require('express');
+const app = express();
+
+
+app.use(cors({
+  origin: [
+    'https://seu-app.vercel.app', // URL do seu frontend na Vercel
+    'http://localhost:3000'       // URL para desenvolvimento local
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Logging para debug da variável de ambiente
+console.log("REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
+
 // Configuração atualizada do axios
 const axiosInstance = axios.create({
-  // Substitua pelo URL do seu backend no Render
-  baseURL: process.env.REACT_APP_API_URL || 'https://localhost:3001',
-  // Alternativa usando URL relativa se frontend e backend estiverem no mesmo domínio:
-  // baseURL: '/api'
+  // Substitua pelo URL do seu backend no Render - use http não https para localhost
+  baseURL: process.env.REACT_APP_API_URL || 
+    (window.location.hostname === 'localhost' ? 
+      'http://localhost:3001' : 
+      'https://to-do-list-task.onrender.com') // Substitua por sua URL real de backend
 });
 
+console.log("Usando API URL:", axiosInstance.defaults.baseURL);
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
