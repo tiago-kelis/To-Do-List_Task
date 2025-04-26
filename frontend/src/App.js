@@ -7,7 +7,7 @@ import './App.css';
 // Configuração atualizada do axios
 const axiosInstance = axios.create({
   // Substitua pelo URL do seu backend no Render
-  baseURL: process.env.REACT_APP_API_URL || 'https://to-do-list-task.onrender.com'
+  baseURL: process.env.REACT_APP_API_URL || 'https://localhost:3001',
   // Alternativa usando URL relativa se frontend e backend estiverem no mesmo domínio:
   // baseURL: '/api'
 });
