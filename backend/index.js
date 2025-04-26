@@ -10,7 +10,7 @@ const userController = require('./controller/UserController');
 
 // Middleware
 app.use(cors({
-  origin: ['http://to-do-list-task-omega.vercel.app/', 'http://localhost:3000'],
+  origin: ['https://to-do-list-task-omega.vercel.app/', 'http://localhost:3000'],
   credentials: true
 }));
 

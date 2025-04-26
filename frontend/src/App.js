@@ -4,20 +4,6 @@ import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import './App.css';
 
-const cors = require('cors');
-const express = require('express');
-const app = express();
-
-
-app.use(cors({
-  origin: [
-    'https://seu-app.vercel.app', // URL do seu frontend na Vercel
-    'http://localhost:3000'       // URL para desenvolvimento local
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
 // Logging para debug da variável de ambiente
 console.log("REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
 
@@ -31,6 +17,7 @@ const axiosInstance = axios.create({
 });
 
 console.log("Usando API URL:", axiosInstance.defaults.baseURL);
+
 const App = () => {
   const [tasks, setTasks] = useState([]);
   const [error, setError] = useState(null);
@@ -38,7 +25,7 @@ const App = () => {
   useEffect(() => {
     // Adicionando tratamento de erro mais detalhado
     setError(null);
-    axiosInstance.get('/tasks')
+    axiosInstance.get('/api/tasks') // Ajustado para incluir /api/
       .then(response => {
         console.log("Fetched tasks:", response.data);
         setTasks(response.data);
@@ -55,7 +42,7 @@ const App = () => {
 
   const addTask = (task) => {
     setError(null);
-    axiosInstance.post('/tasks', { ...task, status: 'To Do' })
+    axiosInstance.post('/api/tasks', { ...task, status: 'To Do' }) // Ajustado para incluir /api/
       .then(response => {
         console.log("Added task:", response.data);
         setTasks([...tasks, response.data]);
@@ -66,9 +53,8 @@ const App = () => {
       });
   };
 
-  // O resto do seu código permanece igual...
   const updateTask = (id, updates) => {
-    axiosInstance.put(`/tasks/${id}`, updates)
+    axiosInstance.put(`/api/tasks/${id}`, updates) // Ajustado para incluir /api/
       .then(response => {
         console.log("Updated task:", response.data);
         setTasks(tasks.map(task => task.id === id ? response.data : task));
@@ -80,7 +66,7 @@ const App = () => {
   };
 
   const deleteTask = (id) => {
-    axiosInstance.delete(`/tasks/${id}`)
+    axiosInstance.delete(`/api/tasks/${id}`) // Ajustado para incluir /api/
       .then(() => {
         console.log("Deleted task:", id);
         setTasks(tasks.filter(task => task.id !== id));
