@@ -4,8 +4,19 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
-// Removemos as linhas problemáticas que usavam createRequire
-// Não é necessário configurar polyfills aqui, pois isso é tratado pelo webpack.config.js
+// Adicione este bloco para desregistrar service workers
+if ('serviceWorker' in navigator) {
+  console.log("Tentando desregistrar service workers...");
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for (let registration of registrations) {
+      console.log("Desregistrando service worker:", registration);
+      registration.unregister();
+    }
+    console.log("Service workers desregistrados com sucesso");
+  }).catch(error => {
+    console.error("Erro ao desregistrar service workers:", error);
+  });
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
