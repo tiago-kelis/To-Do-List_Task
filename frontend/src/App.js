@@ -9,12 +9,11 @@ console.log("REACT_APP_API_URL:", process.env.REACT_APP_API_URL);
 
 // Configuração atualizada do axios
 const axiosInstance = axios.create({
-  // Substitua pelo URL do seu backend no Render - use http não https para localhost
   baseURL: process.env.REACT_APP_API_URL || 
-    (window.location.hostname === 'localhost' ? 
-      'http://localhost:3001' : 
-      'https://to-do-list-task.onrender.com') // Substitua por sua URL real de backend
+           'https://to-do-list-task-wqkq.onrender.com',
 });
+
+console.log("API URL being used:", axiosInstance.defaults.baseURL);
 
 console.log("Usando API URL:", axiosInstance.defaults.baseURL);
 
