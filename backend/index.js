@@ -1,16 +1,14 @@
 // Importando o Express
 const express = require('express');
-const cors = require('cors'); // Você precisará instalar: npm install cors
+const cors = require('cors');
 const app = express();
 
-// Importando controllers
-// Suposição de caminhos corretos com base nos arquivos compartilhados
+// Importando apenas o controller de tarefas
 const taskController = require('./controller/TaskController');
-const userController = require('./controller/UserController');
 
 // Middleware
 app.use(cors({
-  origin: ['https://to-do-list-task-omega.vercel.app/', 'http://localhost:3000'],
+  origin: ['https://to-do-list-task-omega.vercel.app', 'http://localhost:3000'],
   credentials: true
 }));
 
@@ -26,10 +24,6 @@ app.get('/api/tasks', taskController.getAllTasks);
 app.post('/api/tasks', taskController.addTask);
 app.put('/api/tasks/:id', taskController.updateTask);
 app.delete('/api/tasks/:id', taskController.deleteTask);
-
-// Rotas de usuários
-app.get('/api/users', userController.getAllUsers);
-app.post('/api/users', userController.addUser);
 
 // Endpoint de verificação de saúde
 app.get('/health', (req, res) => {
