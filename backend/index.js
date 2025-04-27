@@ -7,10 +7,19 @@ const app = express();
 const taskController = require('./controller/TaskController');
 
 // Middleware
+
+// Configuração CORS explícita
 app.use(cors({
-  origin: ['https://https://frontend-five-kappa-76.vercel.app', 'http://localhost:3000'],
-  credentials: true
+  origin: [
+    'https://frontend-five-kappa-76.vercel.app',  // Seu domínio na Vercel
+    'http://localhost:3000'  // Para desenvolvimento local
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Client-Info'],
+  credentials: true,
+  maxAge: 86400  // 24 horas em segundos
 }));
+
 
 app.use(express.json());
 
