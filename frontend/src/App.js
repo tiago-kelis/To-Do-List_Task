@@ -16,6 +16,60 @@ const axiosInstance = axios.create({
   baseURL: 'https://to-do-list-task-wqkq.onrender.com',
 });
 
+// Configuração adicional do Axios para lidar melhor com solicitações em produção
+axiosInstance.defaults.timeout = 10000; // 10 segundos
+axiosInstance.defaults.headers.common['Cache-Control'] = 'no-cache';
+axiosInstance.defaults.headers.common['Pragma'] = 'no-cache';
+// Adiciona informações de depuração nos cabeçalhos
+axiosInstance.defaults.headers.common['X-Client-Info'] = 'Vercel-Production-Client';
+
+// Interceptor para logs em todas as requisições
+axiosInstance.interceptors.request.use(request => {
+  console.log('Iniciando requisição:', request.method, request.url);
+  return request;
+});
+
+// Interceptor para logs em todas as respostas
+axiosInstance.interceptors.response.use(
+  response => {
+    console.log('Resposta recebida:', response.status, response.config.url);
+    return response;
+  },
+  error => {
+    console.error('Erro na requisição:', error.config?.url, error.message);
+    return Promise.reject(error);
+  }
+);
+
+// Estratégia específica para ambiente de produção
+if (process.env.NODE_ENV === 'production') {
+  console.log("Executando em ambiente de produção - aplicando configurações especiais");
+  
+  // Função para tentar novamente requisições falhas
+  axiosInstance.interceptors.response.use(null, async (error) => {
+    // Se falhou devido a um timeout ou problema de rede, tenta novamente uma vez
+    if (error.code === 'ECONNABORTED' || !error.response) {
+      const config = error.config;
+      
+      // Evitar loop infinito de retry
+      if (!config || config._retry) {
+        return Promise.reject(error);
+      }
+      
+      config._retry = true;
+      console.log("Tentando novamente após falha de rede:", config.url);
+      
+      try {
+        return await axiosInstance(config);
+      } catch (retryError) {
+        return Promise.reject(retryError);
+      }
+    }
+    
+    return Promise.reject(error);
+  });
+}
+
 console.log("API URL definitivamente sendo usada:", axiosInstance.defaults.baseURL);
 
 const App = () => {
@@ -24,33 +78,64 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Adicionando tratamento de erro mais detalhado
+    let isMounted = true;
     setError(null);
     setLoading(true);
     
-    console.log("Fazendo requisição para:", axiosInstance.defaults.baseURL + '/api/tasks');
+    console.log("Iniciando useEffect - fazendo requisição para:", axiosInstance.defaults.baseURL + '/api/tasks');
     
-    axiosInstance.get('/api/tasks')
+    const controller = new AbortController();
+    const signal = controller.signal;
+    
+    axiosInstance.get('/api/tasks', { signal })
       .then(response => {
-        console.log("Fetched tasks:", response.data);
-        setTasks(response.data);
-        setLoading(false);
+        console.log("Resposta recebida com status:", response.status);
+        if (isMounted) {
+          console.log("Dados recebidos:", response.data);
+          
+          // Verificação de conteúdo válido
+          if (!Array.isArray(response.data)) {
+            console.error("Resposta não é um array:", response.data);
+            setError("Formato de dados inesperado");
+            setTasks([]);
+          } else {
+            console.log("Atualizando estado com dados recebidos, total de tarefas:", response.data.length);
+            setTasks(response.data);
+          }
+          
+          setLoading(false);
+        }
       })
       .catch(error => {
+        if (error.name === 'AbortError') {
+          console.log('Requisição cancelada');
+          return;
+        }
+        
         console.error("Error fetching tasks: ", error);
         console.error("Error details:", {
           message: error.message,
           response: error.response ? {
             status: error.response.status,
-            data: error.response.data
+            data: error.response.data,
+            headers: error.response.headers,
           } : 'No response',
           request: error.request ? 'Request was made but no response' : 'Request not sent'
         });
         
-        setError("Não foi possível carregar as tarefas. Por favor, tente novamente mais tarde.");
-        setLoading(false);
-        setTasks([]);
+        if (isMounted) {
+          setError("Não foi possível carregar as tarefas. Por favor, tente novamente mais tarde.");
+          setLoading(false);
+          setTasks([]);
+        }
       });
+    
+    // Cleanup function
+    return () => {
+      console.log("Limpeza do useEffect - abortando requisição pendente");
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   const addTask = (task) => {
@@ -125,6 +210,34 @@ const App = () => {
     }
   };
 
+  // Função para tentar novamente o carregamento de tarefas
+  const handleRetryFetch = () => {
+    console.log("Tentando carregar tarefas novamente...");
+    setLoading(true);
+    setError(null);
+    
+    axiosInstance.get('/api/tasks')
+      .then(response => {
+        console.log("Retry successful, fetched tasks:", response.data);
+        if (Array.isArray(response.data)) {
+          setTasks(response.data);
+          setError(null);
+        } else {
+          console.error("Resposta não é um array:", response.data);
+          setError("Formato de dados inesperado");
+          setTasks([]);
+        }
+      })
+      .catch(error => {
+        console.error("Retry failed:", error);
+        setError("Falha ao tentar carregar as tarefas novamente.");
+        setTasks([]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
   return (
     <div className="App">
       <h1 style={{ margin: '0', padding: '0' }}>
@@ -139,7 +252,12 @@ const App = () => {
       {loading && <div className="loading-message">Carregando tarefas...</div>}
       
       {/* Exibe mensagens de erro quando ocorrerem */}
-      {error && <div className="error-message">{error}</div>}
+      {error && (
+        <div className="error-message">
+          <p>{error}</p>
+          <button onClick={handleRetryFetch}>Tentar novamente</button>
+        </div>
+      )}
       
       <TaskForm onAddTask={addTask} />
       <div className="TaskListColumns">
