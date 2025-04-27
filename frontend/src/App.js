@@ -11,13 +11,19 @@ console.log("Frontend environment:", {
   hostname: window.location.hostname
 });
 
-// Configuração do axios com proxy CORS para evitar problemas de CORS
+// Configuração do axios com proxy CORS alternativo que funciona melhor
 const axiosInstance = axios.create({
-  baseURL: 'https://corsproxy.io/?https://to-do-list-task-wqkq.onrender.com',
-  // Não inclua nenhum header personalizado aqui para evitar problemas de CORS
+  baseURL: 'https://api.allorigins.win/raw?url=https://to-do-list-task-wqkq.onrender.com',
 });
 
 console.log("API URL com proxy CORS:", axiosInstance.defaults.baseURL);
+
+// Função auxiliar para criar URLs completas com o proxy
+const getProxyUrl = (path) => {
+  const baseApiUrl = 'https://to-do-list-task-wqkq.onrender.com';
+  const proxyUrl = 'https://api.allorigins.win/raw?url=';
+  return `${proxyUrl}${encodeURIComponent(`${baseApiUrl}${path}`)}`;
+};
 
 // Interceptor básico para logs de requisições sem adicionar headers
 axiosInstance.interceptors.request.use(request => {
@@ -55,12 +61,15 @@ const App = () => {
     setError(null);
     setLoading(true);
     
-    console.log("Iniciando useEffect - fazendo requisição para:", axiosInstance.defaults.baseURL + '/api/tasks');
+    // Usando URL completa diretamente
+    const tasksUrl = getProxyUrl('/api/tasks');
+    console.log("Iniciando useEffect - fazendo requisição para:", tasksUrl);
     
     const controller = new AbortController();
     const signal = controller.signal;
     
-    axiosInstance.get('/api/tasks', { signal })
+    // Usando axios para chamar diretamente a URL completa
+    axios.get(tasksUrl, { signal })
       .then(response => {
         console.log("Resposta recebida com status:", response.status);
         if (isMounted) {
@@ -114,10 +123,11 @@ const App = () => {
   const addTask = (task) => {
     setError(null);
     
-    console.log("Adicionando tarefa para:", axiosInstance.defaults.baseURL + '/api/tasks');
+    const addUrl = getProxyUrl('/api/tasks');
+    console.log("Adicionando tarefa para:", addUrl);
     console.log("Dados da tarefa:", { ...task, status: 'To Do' });
     
-    axiosInstance.post('/api/tasks', { ...task, status: 'To Do', userId: 1 })
+    axios.post(addUrl, { ...task, status: 'To Do', userId: 1 })
       .then(response => {
         console.log("Added task:", response.data);
         setTasks([...tasks, response.data]);
@@ -137,10 +147,11 @@ const App = () => {
   };
 
   const updateTask = (id, updates) => {
-    console.log("Atualizando tarefa:", axiosInstance.defaults.baseURL + `/api/tasks/${id}`);
+    const updateUrl = getProxyUrl(`/api/tasks/${id}`);
+    console.log("Atualizando tarefa:", updateUrl);
     console.log("Dados de atualização:", updates);
     
-    axiosInstance.put(`/api/tasks/${id}`, updates)
+    axios.put(updateUrl, updates)
       .then(response => {
         console.log("Updated task:", response.data);
         setTasks(tasks.map(task => task.id === id ? response.data : task));
@@ -152,9 +163,10 @@ const App = () => {
   };
 
   const deleteTask = (id) => {
-    console.log("Deletando tarefa:", axiosInstance.defaults.baseURL + `/api/tasks/${id}`);
+    const deleteUrl = getProxyUrl(`/api/tasks/${id}`);
+    console.log("Deletando tarefa:", deleteUrl);
     
-    axiosInstance.delete(`/api/tasks/${id}`)
+    axios.delete(deleteUrl)
       .then(() => {
         console.log("Deleted task:", id);
         setTasks(tasks.filter(task => task.id !== id));
@@ -189,7 +201,8 @@ const App = () => {
     setLoading(true);
     setError(null);
     
-    axiosInstance.get('/api/tasks')
+    const retryUrl = getProxyUrl('/api/tasks');
+    axios.get(retryUrl)
       .then(response => {
         console.log("Retry successful, fetched tasks:", response.data);
         if (Array.isArray(response.data)) {
