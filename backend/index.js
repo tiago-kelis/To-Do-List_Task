@@ -11,25 +11,28 @@ const taskController = require('./controller/TaskController');
 // Configuração CORS explícita
 app.use(cors({
   origin: [
-    'https://frontend-five-kappa-76.vercel.app',  // Seu domínio na Vercel
-    'http://localhost:3000'  // Para desenvolvimento local
+    'https://frontend-five-kappa-76.vercel.app',
+    'http://localhost:3000'
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
     'Content-Type', 
     'Authorization', 
     'X-Client-Info',
-    'Cache-Control',    // Adicionando este cabeçalho que estava causando problemas
-    'Pragma',           // Outro cabeçalho comum que pode causar problemas
-    'X-Requested-With'  // Cabeçalho usado em algumas requisições AJAX
+    'Cache-Control',
+    'Pragma',
+    'X-Requested-With'
   ],
   credentials: true,
-  maxAge: 86400  // 24 horas em segundos
+  maxAge: 86400
 }));
 
-// Middleware para debugging de CORS (opcional, remova em produção)
+// Middleware para debugging de CORS (modificado para ignorar health checks)
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin}`);
+  // Apenas loga rotas da API, ignorando health checks e outras rotas de sistema
+  if (req.path.startsWith('/api/')) {
+    console.log(`${req.method} ${req.path} - Origin: ${req.headers.origin || 'No Origin'}`);
+  }
   next();
 });
 
@@ -46,13 +49,9 @@ app.post('/api/tasks', taskController.addTask);
 app.put('/api/tasks/:id', taskController.updateTask);
 app.delete('/api/tasks/:id', taskController.deleteTask);
 
-// Endpoint de verificação de saúde
+// Endpoint de verificação de saúde - implementação mais eficiente
 app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString()
-  });
+  res.status(200).json({ status: 'OK' });
 });
 
 // Rota para testar a conexão com o banco de dados
@@ -81,6 +80,10 @@ app.get('/api/test-db', async (req, res) => {
 
 // Middleware para tratar rotas não encontradas
 app.use((req, res) => {
+  // Não loga erros 404 para health checks
+  if (req.path !== '/health') {
+    console.log(`Rota não encontrada: ${req.method} ${req.path}`);
+  }
   res.status(404).json({
     status: 'Erro',
     message: `Rota não encontrada: ${req.method} ${req.path}`
@@ -101,6 +104,6 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
-  console.log(`CORS configurado para: ${JSON.stringify(cors().origin)}`);
+  console.log(`CORS configurado para: ${JSON.stringify(app.get('corsConfig') || 'default')}`);
   console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
 });
