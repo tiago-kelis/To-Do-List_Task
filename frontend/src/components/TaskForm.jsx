@@ -36,16 +36,16 @@ const TaskForm = ({ onAddTask }) => {
           required
         />
       </div>
-      <div>
+      {/* <div>
         <label htmlFor="status">Status</label>
         <select id="status" value={status} disabled>
           <option value="To Do">To Do</option>
           <option value="In Progress">In Progress</option>
           <option value="Completed">Completed</option>
         </select>        
-      </div>
+      </div> */}
       <div>
-        <label htmlFor="userId">User ID</label>
+        <label htmlFor="userId">Código da Tarefa</label>
         <input
           type="text"
           id="userId"
@@ -54,7 +54,7 @@ const TaskForm = ({ onAddTask }) => {
           required
         />
       </div>
-      <button type="submit">Add Task</button>
+      <button type="submit">Adicionar</button>
     </form>
   );
 };
