@@ -11,21 +11,25 @@ console.log("Frontend environment:", {
   hostname: window.location.hostname
 });
 
-// Configuração fixa do axios - sem lógica condicional
+// Configuração do axios com proxy CORS para evitar problemas de CORS
 const axiosInstance = axios.create({
-  baseURL: 'https://to-do-list-task-wqkq.onrender.com',
+  baseURL: 'https://corsproxy.io/?https://to-do-list-task-wqkq.onrender.com',
+  // Não inclua nenhum header personalizado aqui para evitar problemas de CORS
 });
 
-// Configuração adicional do Axios para lidar melhor com solicitações em produção
-axiosInstance.defaults.timeout = 10000; // 10 segundos
-axiosInstance.defaults.headers.common['Cache-Control'] = 'no-cache';
-axiosInstance.defaults.headers.common['Pragma'] = 'no-cache';
-// Adiciona informações de depuração nos cabeçalhos
-axiosInstance.defaults.headers.common['X-Client-Info'] = 'Vercel-Production-Client';
+console.log("API URL com proxy CORS:", axiosInstance.defaults.baseURL);
 
-// Interceptor para logs em todas as requisições
+// Interceptor básico para logs de requisições sem adicionar headers
 axiosInstance.interceptors.request.use(request => {
   console.log('Iniciando requisição:', request.method, request.url);
+  
+  // IMPORTANTE: Remove os headers problemáticos (se existirem)
+  if (request.headers) {
+    delete request.headers['Cache-Control'];
+    delete request.headers['Pragma'];
+    delete request.headers['X-Client-Info'];
+  }
+  
   return request;
 });
 
@@ -40,37 +44,6 @@ axiosInstance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// Estratégia específica para ambiente de produção
-if (process.env.NODE_ENV === 'production') {
-  console.log("Executando em ambiente de produção - aplicando configurações especiais");
-  
-  // Função para tentar novamente requisições falhas
-  axiosInstance.interceptors.response.use(null, async (error) => {
-    // Se falhou devido a um timeout ou problema de rede, tenta novamente uma vez
-    if (error.code === 'ECONNABORTED' || !error.response) {
-      const config = error.config;
-      
-      // Evitar loop infinito de retry
-      if (!config || config._retry) {
-        return Promise.reject(error);
-      }
-      
-      config._retry = true;
-      console.log("Tentando novamente após falha de rede:", config.url);
-      
-      try {
-        return await axiosInstance(config);
-      } catch (retryError) {
-        return Promise.reject(retryError);
-      }
-    }
-    
-    return Promise.reject(error);
-  });
-}
-
-console.log("API URL definitivamente sendo usada:", axiosInstance.defaults.baseURL);
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
