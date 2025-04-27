@@ -11,7 +11,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  min-height: 100vh;
+  min-height: 200vh;
   color: #333;
   box-sizing: border-box;
 }
@@ -73,6 +73,7 @@ form label {
 }
 
 form input, form textarea, form select {
+  font-family: serif; 
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;

@@ -228,7 +228,7 @@ const App = () => {
         fontSize: '12px',
         color: '#666'
       }}>
-        <p>API: {axiosInstance.defaults.baseURL}</p>
+       
       </div>
     </div>
   );
