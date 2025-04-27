@@ -8,7 +8,7 @@ const taskController = require('./controller/TaskController');
 
 // Middleware
 app.use(cors({
-  origin: ['https://to-do-list-task-omega.vercel.app', 'http://localhost:3000'],
+  origin: ['https://https://frontend-five-kappa-76.vercel.app', 'http://localhost:3000'],
   credentials: true
 }));
 
