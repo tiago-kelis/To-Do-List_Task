@@ -11,31 +11,12 @@ console.log("Frontend environment:", {
   hostname: window.location.hostname
 });
 
-// URLs e configurações
-const baseApiUrl = 'https://to-do-list-task-wqkq.onrender.com';
-// Para GET - usando AllOrigins
-const readProxyUrl = 'https://api.allorigins.win/raw?url=';
-// Para POST, PUT, DELETE - usando CORS Anywhere (requer ativação inicial)
-const writeProxyUrl = 'https://cors-proxy.htmldriven.com/?url=';
+// Configuração direta do axios - agora que CORS está configurado no backend
+const axiosInstance = axios.create({
+  baseURL: 'https://to-do-list-task-wqkq.onrender.com',
+});
 
-console.log("API URL base:", baseApiUrl);
-console.log("Proxy para leitura:", readProxyUrl);
-console.log("Proxy para escrita:", writeProxyUrl);
-
-// Função auxiliar para criar URLs completas para leitura (GET)
-const getReadUrl = (path) => {
-  return `${readProxyUrl}${encodeURIComponent(`${baseApiUrl}${path}`)}`;
-};
-
-// Função auxiliar para criar URLs completas para escrita (POST/PUT/DELETE)
-const getWriteUrl = (path) => {
-  return `${writeProxyUrl}${encodeURIComponent(`${baseApiUrl}${path}`)}`;
-};
-
-// SOLUÇÃO SIMPLES: Usar JSONPlaceholder para simulação
-// JSONPlaceholder é um serviço que simula uma API REST e não tem problemas de CORS
-const useJsonPlaceholder = true; // Defina como false quando quiser usar sua API real
-const jsonPlaceholderUrl = 'https://jsonplaceholder.typicode.com';
+console.log("API URL:", axiosInstance.defaults.baseURL);
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
@@ -47,45 +28,25 @@ const App = () => {
     setError(null);
     setLoading(true);
     
-    // Decide qual URL usar baseado na configuração
-    let fetchUrl;
-    if (useJsonPlaceholder) {
-      fetchUrl = `${jsonPlaceholderUrl}/todos?_limit=10`;
-      console.log("Usando JSONPlaceholder para simulação:", fetchUrl);
-    } else {
-      fetchUrl = getReadUrl('/api/tasks');
-      console.log("Usando API real com proxy CORS:", fetchUrl);
-    }
+    console.log("Iniciando useEffect - fazendo requisição para:", axiosInstance.defaults.baseURL + '/api/tasks');
     
     const controller = new AbortController();
     const signal = controller.signal;
     
-    axios.get(fetchUrl, { signal })
+    axiosInstance.get('/api/tasks', { signal })
       .then(response => {
         console.log("Resposta recebida com status:", response.status);
         if (isMounted) {
           console.log("Dados recebidos:", response.data);
           
-          let processedData = response.data;
-          
-          // Processamento específico para JSONPlaceholder
-          if (useJsonPlaceholder) {
-            processedData = response.data.map(item => ({
-              id: item.id,
-              title: item.title,
-              description: 'Descrição simulada',
-              status: item.completed ? 'Completed' : (Math.random() > 0.5 ? 'In Progress' : 'To Do')
-            }));
-          }
-          
           // Verificação de conteúdo válido
-          if (!Array.isArray(processedData)) {
-            console.error("Resposta não é um array:", processedData);
+          if (!Array.isArray(response.data)) {
+            console.error("Resposta não é um array:", response.data);
             setError("Formato de dados inesperado");
             setTasks([]);
           } else {
-            console.log("Atualizando estado com dados processados, total de tarefas:", processedData.length);
-            setTasks(processedData);
+            console.log("Atualizando estado com dados recebidos, total de tarefas:", response.data.length);
+            setTasks(response.data);
           }
           
           setLoading(false);
@@ -126,44 +87,13 @@ const App = () => {
   const addTask = (task) => {
     setError(null);
     
-    let postUrl;
-    let postData;
+    console.log("Adicionando tarefa para:", axiosInstance.defaults.baseURL + '/api/tasks');
+    console.log("Dados da tarefa:", { ...task, status: 'To Do' });
     
-    if (useJsonPlaceholder) {
-      postUrl = `${jsonPlaceholderUrl}/todos`;
-      postData = { 
-        title: task.title,
-        completed: false,
-        userId: 1
-      };
-      console.log("Simulando adição de tarefa:", postUrl);
-    } else {
-      postUrl = getWriteUrl('/api/tasks');
-      postData = { ...task, status: 'To Do', userId: 1 };
-      console.log("Adicionando tarefa para:", postUrl);
-    }
-    
-    console.log("Dados da tarefa:", postData);
-    
-    axios.post(postUrl, postData)
+    axiosInstance.post('/api/tasks', { ...task, status: 'To Do', userId: 1 })
       .then(response => {
         console.log("Added task:", response.data);
-        
-        // Para JSONPlaceholder, precisamos criar um objeto completo
-        // pois a API simulada retorna apenas os campos enviados
-        let newTask;
-        if (useJsonPlaceholder) {
-          newTask = {
-            id: response.data.id || Date.now(), // JSONPlaceholder retorna id, mas por segurança
-            title: task.title,
-            description: task.description || 'Descrição simulada',
-            status: 'To Do'
-          };
-        } else {
-          newTask = response.data;
-        }
-        
-        setTasks([...tasks, newTask]);
+        setTasks([...tasks, response.data]);
       })
       .catch(error => {
         console.error("Error adding task: ", error);
@@ -175,97 +105,36 @@ const App = () => {
           } : 'No response'
         });
         
-        // Para demonstração, simula sucesso mesmo com erro para JSONPlaceholder
-        if (useJsonPlaceholder) {
-          console.log("Simulando sucesso apesar do erro");
-          const newTask = {
-            id: Date.now(),
-            title: task.title,
-            description: task.description || 'Descrição simulada',
-            status: 'To Do'
-          };
-          setTasks([...tasks, newTask]);
-        } else {
-          setError("Não foi possível adicionar a tarefa. Por favor, tente novamente.");
-        }
+        setError("Não foi possível adicionar a tarefa. Por favor, tente novamente.");
       });
   };
 
   const updateTask = (id, updates) => {
-    let updateUrl;
-    let updateData;
+    console.log("Atualizando tarefa:", axiosInstance.defaults.baseURL + `/api/tasks/${id}`);
+    console.log("Dados de atualização:", updates);
     
-    if (useJsonPlaceholder) {
-      updateUrl = `${jsonPlaceholderUrl}/todos/${id}`;
-      updateData = { completed: updates.status === 'Completed' };
-      console.log("Simulando atualização de tarefa:", updateUrl);
-    } else {
-      updateUrl = getWriteUrl(`/api/tasks/${id}`);
-      updateData = updates;
-      console.log("Atualizando tarefa:", updateUrl);
-    }
-    
-    console.log("Dados de atualização:", updateData);
-    
-    axios.put(updateUrl, updateData)
+    axiosInstance.put(`/api/tasks/${id}`, updates)
       .then(response => {
         console.log("Updated task:", response.data);
-        
-        // Atualizando localmente para não depender da resposta da API
-        const updatedTasks = tasks.map(task => {
-          if (task.id === id) {
-            return { ...task, ...updates };
-          }
-          return task;
-        });
-        
-        setTasks(updatedTasks);
+        setTasks(tasks.map(task => task.id === id ? response.data : task));
       })
       .catch(error => {
         console.error("Error updating task: ", error);
-        
-        // Para demonstração, atualiza localmente mesmo com erro para JSONPlaceholder
-        if (useJsonPlaceholder) {
-          console.log("Simulando sucesso apesar do erro");
-          const updatedTasks = tasks.map(task => {
-            if (task.id === id) {
-              return { ...task, ...updates };
-            }
-            return task;
-          });
-          setTasks(updatedTasks);
-        } else {
-          setError("Não foi possível atualizar a tarefa.");
-        }
+        setError("Não foi possível atualizar a tarefa.");
       });
   };
 
   const deleteTask = (id) => {
-    let deleteUrl;
+    console.log("Deletando tarefa:", axiosInstance.defaults.baseURL + `/api/tasks/${id}`);
     
-    if (useJsonPlaceholder) {
-      deleteUrl = `${jsonPlaceholderUrl}/todos/${id}`;
-      console.log("Simulando exclusão de tarefa:", deleteUrl);
-    } else {
-      deleteUrl = getWriteUrl(`/api/tasks/${id}`);
-      console.log("Deletando tarefa:", deleteUrl);
-    }
-    
-    axios.delete(deleteUrl)
+    axiosInstance.delete(`/api/tasks/${id}`)
       .then(() => {
         console.log("Deleted task:", id);
         setTasks(tasks.filter(task => task.id !== id));
       })
       .catch(error => {
         console.error("Error deleting task: ", error);
-        
-        // Para demonstração, remove localmente mesmo com erro para JSONPlaceholder
-        if (useJsonPlaceholder) {
-          console.log("Simulando sucesso apesar do erro");
-          setTasks(tasks.filter(task => task.id !== id));
-        } else {
-          setError("Não foi possível excluir a tarefa.");
-        }
+        setError("Não foi possível excluir a tarefa.");
       });
   };
 
@@ -293,34 +162,14 @@ const App = () => {
     setLoading(true);
     setError(null);
     
-    let retryUrl;
-    if (useJsonPlaceholder) {
-      retryUrl = `${jsonPlaceholderUrl}/todos?_limit=10`;
-    } else {
-      retryUrl = getReadUrl('/api/tasks');
-    }
-    
-    axios.get(retryUrl)
+    axiosInstance.get('/api/tasks')
       .then(response => {
         console.log("Retry successful, fetched tasks:", response.data);
-        
-        let processedData = response.data;
-        
-        // Processamento específico para JSONPlaceholder
-        if (useJsonPlaceholder) {
-          processedData = response.data.map(item => ({
-            id: item.id,
-            title: item.title,
-            description: 'Descrição simulada',
-            status: item.completed ? 'Completed' : (Math.random() > 0.5 ? 'In Progress' : 'To Do')
-          }));
-        }
-        
-        if (Array.isArray(processedData)) {
-          setTasks(processedData);
+        if (Array.isArray(response.data)) {
+          setTasks(response.data);
           setError(null);
         } else {
-          console.error("Resposta não é um array:", processedData);
+          console.error("Resposta não é um array:", response.data);
           setError("Formato de dados inesperado");
           setTasks([]);
         }
@@ -344,12 +193,6 @@ const App = () => {
           style={{ width: '150px', height: '90px', padding: '0', margin: '0' }} 
         />
       </h1>
-      
-      {useJsonPlaceholder && (
-        <div className="demo-notice">
-          <p>⚠️ Modo de demonstração ativo: usando API simulada (JSONPlaceholder)</p>
-        </div>
-      )}
       
       {/* Exibe indicador de carregamento */}
       {loading && <div className="loading-message">Carregando tarefas...</div>}
@@ -376,6 +219,16 @@ const App = () => {
           <h2>Completed</h2>
           <TaskList tasks={tasks.filter(task => task.status === 'Completed')} onUpdateTask={updateTask} onDeleteTask={deleteTask} onMoveTask={moveTask} />
         </div>
+      </div>
+      
+      <div className="api-info" style={{
+        margin: '20px 0',
+        padding: '10px',
+        borderTop: '1px solid #eee',
+        fontSize: '12px',
+        color: '#666'
+      }}>
+        <p>API: {axiosInstance.defaults.baseURL}</p>
       </div>
     </div>
   );
