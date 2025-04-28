@@ -23,13 +23,13 @@ body {
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   width: 95%;
-  height: 550px;
+  height: 400px;
   max-width: 1800px; /* Muito mais largo */
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 15px auto;
+  margin: 40px auto;
   color: #333;
   /* Removida a altura mínima para permitir altura natural */
 }
