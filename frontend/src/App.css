@@ -30,6 +30,7 @@ body {
   flex-direction: column;
   align-items: center;
   margin: 40px auto;
+  margin-top: 50px;
   color: #333;
   /* Removida a altura mínima para permitir altura natural */
 }
