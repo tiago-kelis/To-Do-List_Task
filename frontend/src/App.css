@@ -29,7 +29,7 @@ body {
   flex-direction: column;
   align-items: center;
   margin: 40px auto;
-  margin-top: 40px; /* Alterado para 150px conforme solicitado */
+  margin-top: 40px;
   color: #333;
   /* Removida a altura mínima para permitir altura natural */
 }
@@ -62,23 +62,28 @@ form div {
   min-width: 300px; /* Mantém a largura maior */
   display: flex;
   flex-direction: column;
+  align-items: center; /* Centraliza o conteúdo horizontalmente */
   background-color: #ececec;
   padding: 15px; /* Aumentado padding para criar mais espaço entre borda e conteúdo */
   border-radius: 5px;
+  box-sizing: border-box;
 }
 
 /* Conteúdo dentro do container - agora com margens internas */
 form div .input-container {
   width: 90%; /* Conteúdo ocupa 90% da largura do container */
-  margin: 0 auto; /* Centraliza horizontalmente */
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza horizontalmente */
 }
 
 form label {
   font-weight: bold;
-  margin-bottom: 3px;
+  margin-bottom: 5px; /* Aumentado para criar mais espaço entre label e input */
   font-size: 14px;
-  display: block; /* Garante que o label ocupe a largura total disponível */
-  text-align: left;
+  display: block;
+  width: 90%; /* Alinhado com o input */
+  text-align: center; /* Centraliza o texto */
 }
 
 form input, form textarea, form select {
@@ -88,23 +93,26 @@ form input, form textarea, form select {
   border-radius: 5px;
   background-color: #f5f5f5;
   font-size: 14px;
-  width: 90%; /* Reduzido para 90% da largura disponível */
-  max-width: 90%; /* Garante que não ultrapasse 90% */
+  width: 90%;
   box-sizing: border-box;
-  margin: 0 auto; /* Centraliza horizontalmente */
-  display: block; /* Garante que ocupe a largura definida */
+  display: block;
 }
 
 form textarea {
   min-height: 50px;
   resize: vertical;
-  width: 90%; /* Consistente com outros inputs */
+}
+
+/* Container para o botão para alinhá-lo à esquerda */
+.submit-button-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-left: 8px;
+  margin-top: 10px;
 }
 
 form button[type="submit"] {
-  flex: 0 0 auto;
-  margin-left: 0; /* Alinhado à esquerda */
-  margin-top: 10px;
   padding: 8px 16px;
   font-size: 14px;
   background-color: #4caf50;
@@ -138,6 +146,28 @@ form button:hover {
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
   box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+  /* Esconde a barra de rolagem mas mantém a funcionalidade */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0,0,0,0.2) transparent; /* Firefox */
+}
+
+/* Estilizando a barra de rolagem para Chrome, Edge e Safari */
+.TaskListColumn::-webkit-scrollbar {
+  width: 6px;
+}
+
+.TaskListColumn::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.TaskListColumn::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 20px;
+}
+
+/* Mostrar a barra de rolagem apenas ao passar o mouse */
+.TaskListColumn:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.4);
 }
 
 .TaskListColumn h2 {
@@ -148,9 +178,7 @@ form button:hover {
   text-align: center;
   padding-bottom: 5px;
   border-bottom: 1px solid #ddd;
-  width: 80%; /* Reduzido para 80% da largura */
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%; /* Ocupa largura total para centralização uniforme */
 }
 
 /* Estilos da Lista de Tarefas - mais compacto */
@@ -158,8 +186,30 @@ form button:hover {
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden; /* Impede scroll horizontal */
-  padding: 0 5px; /* Reduzido padding lateral para evitar overflow */
+  padding: 0;
   box-sizing: border-box; /* Garante que o padding não aumente a largura total */
+  /* Esconde a barra de rolagem mas mantém a funcionalidade */
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: transparent transparent; /* Firefox */
+}
+
+/* Estilizando a barra de rolagem para Chrome, Edge e Safari */
+.TaskList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.TaskList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.TaskList::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 20px;
+}
+
+/* Mostrar a barra de rolagem apenas ao passar o mouse */
+.TaskList:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.2);
 }
 
 .TaskList .task {
@@ -169,6 +219,7 @@ form button:hover {
   margin-bottom: 12px;
   display: flex;
   flex-direction: column;
+  align-items: center; /* Centraliza conteúdo */
   transition: background-color 0.3s;
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   width: 85%; /* Reduzido para 85% da largura */
@@ -191,9 +242,7 @@ form button:hover {
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
+  text-align: center; /* Centraliza o texto */
 }
 
 .task button {
@@ -209,9 +258,8 @@ form button:hover {
   margin: 0 0 5px 0;
   color: #333;
   font-size: 14px;
-  width: 95%; /* Ligeiramente menor que o container pai */
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  text-align: center; /* Centraliza o texto */
   word-wrap: break-word; /* Quebra palavras longas */
   overflow-wrap: break-word;
 }
@@ -221,9 +269,8 @@ form button:hover {
   color: #555;
   font-size: 12px;
   line-height: 1.3;
-  width: 95%; /* Ligeiramente menor que o container pai */
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  text-align: center; /* Centraliza o texto */
   word-wrap: break-word; /* Quebra palavras longas */
   overflow-wrap: break-word;
 }
@@ -235,9 +282,7 @@ form button:hover {
   gap: 8px;
   flex-wrap: wrap;
   margin-top: 8px;
-  width: 90%; /* Reduzido para 90% da largura */
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
 }
 
 /* Estilo dos botões */
@@ -355,7 +400,7 @@ form button:hover {
   .App {
     width: 95%;
     padding: 10px;
-    margin-top: 100px; /* Ajustado para telas menores */
+    margin-top: 40px;
   }
   
   form div {
@@ -377,6 +422,11 @@ form button:hover {
   .TaskList .task-controls {
     width: 95%; /* Quase largura total em telas pequenas */
   }
+  
+  .submit-button-wrapper {
+    padding-left: 0;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
@@ -385,7 +435,7 @@ form button:hover {
     padding: 10px;
     border-radius: 0;
     margin: 0;
-    margin-top: 80px; /* Ajustado para telas muito pequenas */
+    margin-top: 20px;
   }
   
   .task-controls {
