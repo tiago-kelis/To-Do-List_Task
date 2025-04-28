@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&family=Lilita+One&family=Ultra&display=swap');
 
-
 /* Estilos Gerais */
 body {
   font-family: "Ultra", serif;  
@@ -30,7 +29,7 @@ body {
   flex-direction: column;
   align-items: center;
   margin: 40px auto;
-  margin-top: 50px;
+  margin-top: 150px; /* Alterado para 150px conforme solicitado */
   color: #333;
   /* Removida a altura mínima para permitir altura natural */
 }
@@ -59,8 +58,8 @@ form {
 }
 
 form div {
-  flex: 1 1 200px;
-  min-width: 200px;
+  flex: 1 1 300px; /* Aumentado de 200px para 300px para maior largura */
+  min-width: 300px; /* Aumentado de 200px para 300px para maior largura */
   display: flex;
   flex-direction: column;
   background-color: #ececec;
@@ -153,6 +152,7 @@ form button:hover {
   flex-direction: column;
   transition: background-color 0.3s;
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  width: 100%; /* Garantir que ocupe toda a largura disponível */
 }
 
 .TaskList .task:hover {
@@ -301,6 +301,7 @@ form button:hover {
   .App {
     width: 95%;
     padding: 10px;
+    margin-top: 100px; /* Ajustado para telas menores */
   }
   
   form div {
@@ -319,6 +320,7 @@ form button:hover {
     padding: 10px;
     border-radius: 0;
     margin: 0;
+    margin-top: 80px; /* Ajustado para telas muito pequenas */
   }
   
   .task-controls {
