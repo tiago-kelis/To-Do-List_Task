@@ -115,6 +115,8 @@ form button[type="submit"] {
   padding: 10px 25px; /* Aumentado o tamanho do botão */
   font-size: 15px; /* Texto ligeiramente maior */
   background-color: #4caf50;
+  justify-content: center; /* Centralizado */
+  width: 100%;
   color: #fff;
   border: none;
   border-radius: 15px;
@@ -350,7 +352,7 @@ form button:hover {
 .status-indicator {
   flex: 1;
   text-align: center;
-  padding: 5px 0; /* Padding aumentado para todos os status */
+  padding: 7px 0; /* Padding aumentado para todos os status */
   border-radius: 3px;
   background-color: #d3d3d3;
   transition: background-color 0.3s;
