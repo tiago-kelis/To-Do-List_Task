@@ -103,28 +103,29 @@ form textarea {
   resize: vertical;
 }
 
-/* Container para o botão para alinhá-lo à esquerda */
+/* Container para o botão para centralizá-lo */
 .submit-button-wrapper {
   width: 100%;
   display: flex;
-  justify-content: center;
-  padding-left: 8px;
-  margin-top: 10px;
+  justify-content: center; /* Centralizado */
+  margin-top: 15px; /* Aumentado espaço acima do botão */
 }
 
 form button[type="submit"] {
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: 10px 25px; /* Aumentado o tamanho do botão */
+  font-size: 15px; /* Texto ligeiramente maior */
   background-color: #4caf50;
   color: #fff;
   border: none;
   border-radius: 15px;
   cursor: pointer;
   transition: background-color 0.3s;
+  font-weight: bold; /* Destaque adicional */
 }
 
 form button:hover {
   background-color: #45a049;
+  transform: scale(1.05); /* Pequeno efeito ao passar o mouse */
 }
 
 /* Estilos das Colunas - layout mais horizontal */
@@ -349,7 +350,7 @@ form button:hover {
 .status-indicator {
   flex: 1;
   text-align: center;
-  padding: 3px 0;
+  padding: 5px 0; /* Padding aumentado para todos os status */
   border-radius: 3px;
   background-color: #d3d3d3;
   transition: background-color 0.3s;
@@ -357,9 +358,15 @@ form button:hover {
   margin: 0 2px;
 }
 
+/* Padding extra para o status 'completed' */
+.status-indicator:last-child {
+  padding: 5px 8px; /* Padding horizontal extra para o status completed */
+}
+
 .status-indicator.active {
   background-color: #4caf50;
   color: #fff;
+  font-weight: bold; /* Destaque adicional para o status ativo */
 }
 
 /* Select de status - escondido mas mantido para acessibilidade */
@@ -427,6 +434,11 @@ form button:hover {
     padding-left: 0;
     justify-content: center;
   }
+  
+  form button[type="submit"] {
+    width: 80%; /* Botão mais largo em telas menores */
+    padding: 12px 25px; /* Botão mais alto em telas menores para facilitar o toque */
+  }
 }
 
 @media (max-width: 480px) {
@@ -456,5 +468,9 @@ form button:hover {
   form select,
   .progress-bar {
     width: 98%;
+  }
+  
+  form button[type="submit"] {
+    width: 90%; /* Botão ainda mais largo em telas muito pequenas */
   }
 }
