@@ -116,7 +116,7 @@ form button[type="submit"] {
   font-size: 15px; /* Texto ligeiramente maior */
   background-color: #4caf50;
   justify-content: center; /* Centralizado */
-  width: 100%;
+  width: 70%;
   color: #fff;
   border: none;
   border-radius: 15px;
@@ -358,6 +358,11 @@ form button:hover {
   transition: background-color 0.3s;
   font-size: 10px;
   margin: 0 2px;
+}
+
+/* Padding extra para o status 'in progress' (segundo indicador) */
+.status-indicator:nth-child(3) {
+  padding: 5px 8px; /* Padding horizontal extra para in progress */
 }
 
 /* Padding extra para o status 'in progress' (segundo indicador) */
