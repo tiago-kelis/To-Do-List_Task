@@ -190,7 +190,7 @@ const App = () => {
         <img 
           src={process.env.PUBLIC_URL + '/logoWeb-removebg-preview.png'} 
           alt="Logo" 
-          style={{ width: '150px', height: '90px', padding: '0', margin: '0' }} 
+          style={{ width: '150px', height: '90px', padding: '0', marginTop: -"35" }} 
         />
       </h1>
       

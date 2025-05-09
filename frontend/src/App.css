@@ -340,6 +340,11 @@ form button:hover {
   text-align: center;
 }
 
+.loading-message {
+  width: 500px;
+  background: #cecece;
+}
+
 /* Barra de progresso mais compacta */
 .progress-bar {
   display: flex;
