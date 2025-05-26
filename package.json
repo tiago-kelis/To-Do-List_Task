@@ -2,10 +2,21 @@
   "name": "projeto",
   "version": "1.0.0",
   "scripts": {
+    "build:backend": "npm install --prefix backend --legacy-peer-deps && npm run build --prefix backend && npm run migrate:dev --prefix backend",
+    "build:frontend": "npm install --prefix frontend && npm run build --prefix frontend",
+    "build:core": "npm install --prefix core && npm run build --prefix core",
+    "build": "npm run build:backend && npm run build:frontend && npm run build:core",
+    "start:backend": "npm start --prefix backend",
+    "start:frontend": "npm start --prefix frontend",
+    "start:core": "npm start --prefix core",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\" \"npm run start:core\"",
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\" \"npm run dev:core\"",
     "dev:frontend": "npm start --prefix frontend",
     "dev:backend": "npm start --prefix backend",
     "dev:core": "npm start --prefix core"
+  },
+  "dependencies": {
+    "concurrently": "^6.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
@@ -13,31 +24,17 @@
     "@babel/preset-react": "^7.26.3",
     "@craco/craco": "^7.1.0",
     "@types/node": "^22.15.1",
-    "assert": "^2.1.0",
     "babel-loader": "^10.0.0",
-    "buffer": "^6.0.3",
-    "concurrently": "^6.5.1",
-    "constants-browserify": "^1.0.0",
-    "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
+    "cross-env": "^7.0.3",
     "customize-cra": "^1.0.0",
-    "https-browserify": "^1.0.0",
-    "os-browserify": "^0.3.0",
-    "path-browserify": "^1.0.1",
+    "nodemon": "^2.0.15",
     "prisma": "^6.6.0",
-    "process": "^0.11.10",
     "react-app-rewired": "^2.2.1",
-    "stream-browserify": "^3.0.0",
-    "stream-http": "^3.2.0",
     "style-loader": "^4.0.0",
-    "url": "^0.11.4",
-    "util": "^0.12.5",
+    "typescript": "^4.9.5",
     "webpack": "^5.99.7",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.1"
-  },
-  "dependencies": {
-    "@prisma/client": "^6.6.0",
-    "axios": "^0.21.4"
   }
 }
