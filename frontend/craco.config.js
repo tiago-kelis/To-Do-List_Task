@@ -1,15 +1,7 @@
 const webpack = require('webpack');
 
-// Verifica se o ambiente é de desenvolvimento
-const isDevelopment = process.env.NODE_ENV === "development";
-
 module.exports = {
-  babel: {
-    plugins: [
-      // Adiciona o plugin react-refresh/babel somente em desenvolvimento
-      isDevelopment && require.resolve("react-refresh/babel"),
-    ].filter(Boolean), // Remove valores falsos do array
-  },
+ 
   webpack: {
     configure: {
       resolve: {
