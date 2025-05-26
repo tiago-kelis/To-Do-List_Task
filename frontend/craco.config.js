@@ -1,6 +1,13 @@
 const webpack = require('webpack');
 
+const isDevelopment = process.env.NODE_ENV === "development";
+
 module.exports = {
+  babel: {
+    plugins: [
+      isDevelopment && require.resolve("react-refresh/babel")
+    ].filter(Boolean),
+  },
   webpack: {
     configure: {
       resolve: {
