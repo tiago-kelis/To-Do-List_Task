@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",                   // Versão do JS de saída
+    "module": "commonjs",                 // Módulo para Node.js
+    "outDir": "./dist",                   // Saída do código compilado
+    "rootDir": "./src",                   // Pasta com o código-fonte TS
+    "strict": true,                      // Ativa checagens rigorosas
+    "esModuleInterop": true,             // Facilita importações de módulos CommonJS
+    "skipLibCheck": true,                 // Ignora verificação de tipos em libs externas
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],                // O que compilar: todos arquivos TS na pasta src
+  "exclude": ["node_modules", "dist"]    // O que excluir da compilação
+}
