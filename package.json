@@ -2,7 +2,7 @@
   "name": "projeto",
   "version": "1.0.0",
   "scripts": {
-    "build:backend": "npm install --prefix backend --legacy-peer-deps && npm run build --prefix backend && npm run migrate:dev --prefix backend",
+    "build:backend": "npm install --prefix backend --legacy-peer-deps && npm run build --prefix backend && npm run migrate:prod --prefix backend",
     "build:frontend": "npm install --prefix frontend && npm run build --prefix frontend",
     "build:core": "npm install --prefix core && npm run build --prefix core",
     "build": "npm run build:backend && npm run build:frontend && npm run build:core",
