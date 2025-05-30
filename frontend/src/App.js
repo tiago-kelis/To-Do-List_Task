@@ -13,7 +13,8 @@ console.log("Frontend environment:", {
 
 // Configuração direta do axios - agora que CORS está configurado no backend
 const axiosInstance = axios.create({
-  baseURL: 'https://to-do-list-task-wqkq.onrender.com',
+  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3001',
+
 });
 
 console.log("API URL:", axiosInstance.defaults.baseURL);

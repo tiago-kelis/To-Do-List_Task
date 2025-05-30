@@ -1,7 +1,7 @@
 // pages/api/proxy/[...path].js
 export default async function handler(req, res) {
     const { path } = req.query;
-    const targetUrl = `https://to-do-list-task-wqkq.onrender.com/api/${path.join('/')}`;
+    const targetUrl = `https://localhost:3000/api/${path.join('/')}`;
     
     try {
       const response = await fetch(targetUrl, {
